@@ -10,19 +10,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, Lock, LogIn } from "lucide-react";
+import { AlertCircle, Lock } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ExternalBlob, Type } from "../backend";
 import { useActor } from "../hooks/useActor";
-import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useCreateSpot } from "../hooks/useQueries";
 import { useLang } from "../i18n";
 
 export function RegisterSpotPage() {
   const { t } = useLang();
   const createSpot = useCreateSpot();
-  const { identity, login, isLoggingIn } = useInternetIdentity();
   const { actor } = useActor();
 
   const [name, setName] = useState("");
@@ -33,8 +31,6 @@ export function RegisterSpotPage() {
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  const isLoggedIn = !!identity;
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setPhotoFiles(Array.from(e.target.files));
@@ -43,21 +39,12 @@ export function RegisterSpotPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!actor || !identity) {
-      toast.error("Precisa de fazer login para cadastrar um ponto turístico.");
+    if (!actor) {
+      toast.error("Erro de ligação. Tente novamente.");
       return;
     }
     setUploading(true);
     try {
-      // Auto-register user profile if needed
-      try {
-        await actor.saveCallerUserProfile({
-          name: identity.getPrincipal().toString(),
-        });
-      } catch {
-        // Ignore if already registered
-      }
-
       const photos: ExternalBlob[] = [];
       for (const file of photoFiles) {
         const bytes = new Uint8Array(await file.arrayBuffer());
@@ -85,35 +72,6 @@ export function RegisterSpotPage() {
       setUploading(false);
     }
   };
-
-  if (!isLoggedIn) {
-    return (
-      <main className="container mx-auto px-4 py-10 max-w-2xl">
-        <h1 className="font-display text-4xl font-bold text-foreground mb-8">
-          {t.registerSpot.title}
-        </h1>
-        <div className="bg-card rounded-2xl p-10 shadow-card border border-border flex flex-col items-center gap-6 text-center">
-          <LogIn className="w-14 h-14 text-orange" />
-          <div>
-            <p className="text-lg font-semibold text-foreground mb-2">
-              Login necessário
-            </p>
-            <p className="text-muted-foreground">
-              Para cadastrar um ponto turístico, precisa de iniciar sessão com a
-              sua Internet Identity.
-            </p>
-          </div>
-          <Button
-            className="bg-orange hover:bg-orange/90 text-white px-8"
-            onClick={() => login()}
-            disabled={isLoggingIn}
-          >
-            {isLoggingIn ? "A iniciar sessão..." : "Iniciar Sessão"}
-          </Button>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-2xl">

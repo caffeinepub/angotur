@@ -146,10 +146,7 @@ actor {
 
   //--- TOURIST SPOTS ---//
   public shared ({ caller }) func createTouristSpot(newSpot : NewTouristSpot) : async TouristSpot {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can create tourist spots");
-    };
-
+    // Open to all: no login required
     let id = newSpot.name.concat(Time.now().toText());
     let (feeStatus, platformFee) =
       if (newSpot.isPrivate) { (#unpaid, 25000) } else {
@@ -293,9 +290,7 @@ actor {
 
   //--- TOUR GUIDES ---//
   public shared ({ caller }) func addTourGuide(newGuide : NewTourGuide) : async TourGuide {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can register as tour guides");
-    };
+    // Open to all: no login required
     let id = newGuide.name.concat(Time.now().toText());
     let guide : TourGuide = {
       id;

@@ -3,19 +3,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, LogIn } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ExternalBlob } from "../backend";
 import { useActor } from "../hooks/useActor";
-import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useCreateGuide } from "../hooks/useQueries";
 import { useLang } from "../i18n";
 
 export function RegisterGuidePage() {
   const { t } = useLang();
   const createGuide = useCreateGuide();
-  const { identity, login, isLoggingIn } = useInternetIdentity();
   const { actor } = useActor();
 
   const [name, setName] = useState("");
@@ -26,25 +24,14 @@ export function RegisterGuidePage() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const isLoggedIn = !!identity;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!actor || !identity) {
-      toast.error("Precisa de fazer login para se registar como guia.");
+    if (!actor) {
+      toast.error("Erro de ligação. Tente novamente.");
       return;
     }
     setUploading(true);
     try {
-      // Auto-register user profile if needed
-      try {
-        await actor.saveCallerUserProfile({
-          name: identity.getPrincipal().toString(),
-        });
-      } catch {
-        // Ignore if already registered
-      }
-
       let profilePhoto: ExternalBlob | undefined;
       if (photoFile) {
         const bytes = new Uint8Array(await photoFile.arrayBuffer());
@@ -75,35 +62,6 @@ export function RegisterGuidePage() {
       setUploading(false);
     }
   };
-
-  if (!isLoggedIn) {
-    return (
-      <main className="container mx-auto px-4 py-10 max-w-2xl">
-        <h1 className="font-display text-4xl font-bold text-foreground mb-8">
-          {t.registerGuide.title}
-        </h1>
-        <div className="bg-card rounded-2xl p-10 shadow-card border border-border flex flex-col items-center gap-6 text-center">
-          <LogIn className="w-14 h-14 text-orange" />
-          <div>
-            <p className="text-lg font-semibold text-foreground mb-2">
-              Login necessário
-            </p>
-            <p className="text-muted-foreground">
-              Para se registar como guia turístico, precisa de iniciar sessão
-              com a sua Internet Identity.
-            </p>
-          </div>
-          <Button
-            className="bg-orange hover:bg-orange/90 text-white px-8"
-            onClick={() => login()}
-            disabled={isLoggingIn}
-          >
-            {isLoggingIn ? "A iniciar sessão..." : "Iniciar Sessão"}
-          </Button>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-2xl">
