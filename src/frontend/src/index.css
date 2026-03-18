@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/assets/fonts/PlayfairDisplay.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* Angotur vivid palette */
+    /* Navy #0A2240 → oklch(0.22 0.09 240) */
+    /* Orange #D96B1A → oklch(0.60 0.20 40) */
+    /* Cream #FAF6F0 → oklch(0.97 0.01 60) */
+
+    --background: 0.97 0.01 60;
+    --foreground: 0.15 0.06 240;
+    --card: 1 0 0;
+    --card-foreground: 0.15 0.06 240;
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0.06 240;
+    --primary: 0.22 0.09 240;
+    --primary-foreground: 0.97 0.01 60;
+    --secondary: 0.93 0.025 60;
+    --secondary-foreground: 0.22 0.09 240;
+    --muted: 0.95 0.015 60;
+    --muted-foreground: 0.42 0.04 240;
+    --accent: 0.6 0.2 40;
+    --accent-foreground: 1 0 0;
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+    --border: 0.87 0.02 60;
+    --input: 0.87 0.02 60;
+    --ring: 0.6 0.2 40;
+
+    --navy: 0.22 0.09 240;
+    --orange: 0.6 0.2 40;
+    --cream: 0.93 0.025 60;
+
+    --chart-1: 0.6 0.2 40;
+    --chart-2: 0.22 0.09 240;
+    --chart-3: 0.65 0.12 155;
+    --chart-4: 0.75 0.15 80;
+    --chart-5: 0.45 0.1 300;
+    --sidebar: 0.22 0.09 240;
+    --sidebar-foreground: 0.93 0.025 60;
+    --sidebar-primary: 0.6 0.2 40;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.28 0.09 240;
+    --sidebar-accent-foreground: 0.93 0.025 60;
+    --sidebar-border: 0.3 0.09 240;
+    --sidebar-ring: 0.6 0.2 40;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+  }
+}
